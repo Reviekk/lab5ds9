@@ -1,0 +1,22 @@
+<div class="text-center">
+    <div class="mb-4">
+      <i class="fas fa-times-circle text-danger" style="font-size: 5rem;"></i>
+    </div>
+    
+    <h1 class="display-4">Pago Fallido</h1>
+    <p class="lead"><%= message %></p>
+    
+    <div class="my-4">
+      <p>Posibles causas:</p>
+      <ul class="list-unstyled">
+        <li>Datos de la tarjeta incorrectos</li>
+        <li>Fondos insuficientes</li>
+        <li>Problemas de conexión</li>
+      </ul>
+    </div>
+    
+    <div class="my-4">
+      <a href="/checkout" class="btn btn-primary mr-2">Intentar nuevamente</a>
+      <a href="/cart" class="btn btn-outline-secondary">Volver al carrito</a>
+    </div>
+  </div>

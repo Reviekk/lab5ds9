@@ -1,0 +1,28 @@
+<div class="text-center">
+    <div class="mb-4">
+      <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+    </div>
+    
+    <h1 class="display-4">¡Gracias por tu compra!</h1>
+    <p class="lead">Tu pedido ha sido procesado correctamente.</p>
+    
+    <div class="card my-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Detalles del Pedido</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Número de Orden:</strong> <%= order.id %></p>
+        <p><strong>Fecha:</strong> <%= new Date(order.createdAt).toLocaleString() %></p>
+        <p><strong>Total:</strong>             
+              <div class="tab-pane fade" id="pills-checkout" role="tabpanel">
+                  <div class="card mb-4">
+                      <div class="card-header">
+                          <h4>5.4.lt;%= order.total %></p>
+        <p><strong>Estado:</strong> <span class="badge badge-success">Pagado</span></p>
+      </div>
+    </div>
+    
+    <p>Recibirás un correo electrónico con la confirmación de tu pedido.</p>
+    
+    <a href="/products" class="btn btn-primary mt-3">Seguir comprando</a>
+  </div>

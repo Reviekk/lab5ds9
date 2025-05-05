@@ -1,0 +1,103 @@
+<h1>Procesar Pago</h1>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Método de Pago</h5>
+      </div>
+      <div class="card-body">
+        <div id="container-form" style="width: 100%; min-height: 300px;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Resumen del Pedido</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          <li class="list-group-item">
+            <strong>Orden #:</strong> <%= order.id %>
+          </li>
+          <li class="list-group-item">
+            <strong>Cliente:</strong> <%= order.firstName %> <%= order.lastName %>
+          </li>
+          <li class="list-group-item">
+            <strong>Email:</strong> <%= order.email %>
+          </li>
+          <li class="list-group-item">
+            <strong>Teléfono:</strong> <%= order.phone %>
+          </li>
+          <li class="list-group-item">
+            <strong>Dirección:</strong> <%= order.address %>, <%= order.city %>, <%= order.province %>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total</span>
+            <strong>            
+            <div class="tab-pane fade" id="pills-checkout" role="tabpanel">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>5.4.lt;%= order.total %></strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Script para integrar PagueloFácil
+  pfWallet = pfWallet || {};
+  let apiKey = "<%= paguelofacil.apiKey %>";
+  let cclw = "<%= paguelofacil.cclw %>";
+  
+  pfWallet.useAsSandbox(true);
+          
+  pfWallet.openService({
+      apiKey: apiKey,
+      cclw: cclw
+  }).then(function (merchantSetup) {
+      startMerchantForm(merchantSetup);
+  }, function (error) {
+      console.log(error);
+  });
+
+  let sdk;
+  function startMerchantForm(merchantSetup) {
+      let paymentInfo = {
+          amount: parseFloat( order.total ),
+          discount: 0.0,
+          taxAmount: 0.0,
+          description: "Orden #<%= order.id %>"
+      };
+      console.log("merchantSetup", merchantSetup);
+      let setup = {
+          lang: 'es',
+          embedded: true,
+          container: 'container-form',
+          onError: function (data) {
+              console.error("errors", data);
+          },
+          onTxSuccess: function (data) {
+              console.log("onTxSuccess", data);
+              window.location.href = "/checkout/success?orderId=<%= order.id %>&txId=" + data?.Oper;
+          },
+          onTxError: function (data) {
+              console.error("when the onTxError, in other process", data);
+              window.location.href = "/checkout/failed?orderId=<%= order.id %>";
+          },
+          onClose: function () {
+              console.log("onClose called");
+              window.location.href = "/checkout/cancel?orderId=<%= order.id %>";
+          }
+      };
+      sdk = merchantSetup.init(
+          merchantSetup.dataMerchant,
+          paymentInfo,
+          setup
+      );
+  }
+</script>

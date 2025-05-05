@@ -1,0 +1,68 @@
+<h1>Carrito de Compras</h1>
+
+<% if(cart.items.length === 0) { %>
+  <div class="alert alert-info">
+    Tu carrito está vacío. <a href="/products">Ir a la tienda</a>
+  </div>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(let item of cart.items) { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                <img src="<%= item.product.imageUrl %>" alt="<%= item.product.name %>" class="img-thumbnail mr-3 cart-item-img">
+                <%= item.product.name %>
+              </div>
+            </td>
+            <td>$<%= item.product.price %></td>
+            <td>
+              <form action="/cart/update" method="POST" class="form-inline">
+                <input type="hidden" name="productId" value="<%= item.product.id %>">
+                <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="form-control form-control-sm mr-2" style="width: 60px;">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-sync-alt"></i>
+                </button>
+              </form>
+            </td>
+            <td>$<%= (item.product.price * item.quantity).toFixed(2) %></td>
+            <td>
+              <form action="/cart/remove" method="POST">
+                <input type="hidden" name="productId" value="<%= item.product.id %>">
+                <button type="submit" class="btn btn-sm btn-danger remove-item-btn">
+                  <i class="fas fa-trash"></i> Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-right font-weight-bold">Total:</td>
+          <td class="font-weight-bold">$<%= cart.totalPrice.toFixed(2) %></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between mt-4">
+    <a href="/products" class="btn btn-outline-primary">
+      <i class="fas fa-arrow-left"></i> Seguir comprando
+    </a>
+    <a href="/checkout" class="btn btn-success">
+      <i class="fas fa-credit-card"></i> Proceder al pago
+    </a>
+  </div>
+<% } %>

@@ -1,0 +1,22 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    
+</head>
+<body>
+    <h1>Productos Destacados</h1>
+    <% if (featuredProducts.length > 0) { %>
+        <% featuredProducts.forEach(product => { %>
+            <div>
+                <h3><%= product.name %></h3>
+                <p>Precio: $<%= product.price %></p>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No hay productos destacados.</p>
+    <% } %>
+    <a href="/products">Ver todos los productos</a>
+</body>
+</html>
