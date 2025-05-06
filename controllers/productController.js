@@ -25,7 +25,7 @@ const productController = {
   getAllProducts: async (req, res) => {
     try {
       const products = await Product.findAll();
-      
+      console.log(products);
       res.render('products', { 
         title: 'Productos',
         products 
