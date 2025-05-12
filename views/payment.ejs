@@ -1,6 +1,3 @@
-<!-- SDK PayPal Sandbox -->
-<script src="https://www.paypal.com/sdk/js?client-id=AdmzDgq_IhvGu_jImGxvRSy2ZFAD-D49p75TD2DQOoYnwstabxloceh6K6yELG8vQUTi6H-e6v_jl7jQ&currency=USD&components=buttons"></script>
-
 <h1>Procesar Pago</h1>
 
 <div class="row">
@@ -10,8 +7,7 @@
         <h5 class="mb-0">Método de Pago</h5>
       </div>
       <div class="card-body">
-        <!-- Aquí se muestra el botón de PayPal -->
-        <div id="paypal-button-container" style="width: 100%; min-height: 300px;"></div>
+        <div id="container-form" style="width: 100%; min-height: 300px;"></div>
       </div>
     </div>
   </div>
@@ -23,14 +19,28 @@
       </div>
       <div class="card-body">
         <ul class="list-group mb-3">
-          <li class="list-group-item"><strong>Orden #:</strong> <%= order.id %></li>
-          <li class="list-group-item"><strong>Cliente:</strong> <%= order.firstName %> <%= order.lastName %></li>
-          <li class="list-group-item"><strong>Email:</strong> <%= order.email %></li>
-          <li class="list-group-item"><strong>Teléfono:</strong> <%= order.phone %></li>
-          <li class="list-group-item"><strong>Dirección:</strong> <%= order.address %>, <%= order.city %>, <%= order.province %></li>
+          <li class="list-group-item">
+            <strong>Orden #:</strong> <%= order.id %>
+          </li>
+          <li class="list-group-item">
+            <strong>Cliente:</strong> <%= order.firstName %> <%= order.lastName %>
+          </li>
+          <li class="list-group-item">
+            <strong>Email:</strong> <%= order.email %>
+          </li>
+          <li class="list-group-item">
+            <strong>Teléfono:</strong> <%= order.phone %>
+          </li>
+          <li class="list-group-item">
+            <strong>Dirección:</strong> <%= order.address %>, <%= order.city %>, <%= order.province %>
+          </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>Total</span>
-            <strong>$<%= order.total %></strong>
+            <strong>            
+            <div class="tab-pane fade" id="pills-checkout" role="tabpanel">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>5.4.lt;%= order.total %></strong>
           </li>
         </ul>
       </div>
@@ -38,38 +48,56 @@
   </div>
 </div>
 
-<!-- Script PayPal -->
 <script>
-  window.addEventListener('load', function () {
-    if (typeof paypal === 'undefined') {
-      console.error("PayPal SDK no está cargado correctamente.");
-      return;
-    }
-
-    paypal.Buttons({
-      createOrder: function (data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              value: "<%= order.total %>",
-              currency_code: "USD"
-            },
-            description: "Orden #<%= order.id %>"
-          }]
-        });
-      },
-      onApprove: function (data, actions) {
-        return actions.order.capture().then(function (details) {
-          window.location.href = "/checkout/success?orderId=<%= order.id %>&txId=" + details.id;
-        });
-      },
-      onError: function (err) {
-        console.error("Error al procesar el pago:", err);
-        window.location.href = "/checkout/failed?orderId=<%= order.id %>";
-      },
-      onCancel: function () {
-        window.location.href = "/checkout/cancel?orderId=<%= order.id %>";
-      }
-    }).render('#paypal-button-container');
+  // Script para integrar PagueloFácil
+  pfWallet = pfWallet || {};
+  let apiKey = "<%= paguelofacil.apiKey %>";
+  let cclw = "<%= paguelofacil.cclw %>";
+  
+  pfWallet.useAsSandbox(true);
+          
+  pfWallet.openService({
+      apiKey: apiKey,
+      cclw: cclw
+  }).then(function (merchantSetup) {
+      startMerchantForm(merchantSetup);
+  }, function (error) {
+      console.log(error);
   });
+
+  let sdk;
+  function startMerchantForm(merchantSetup) {
+      let paymentInfo = {
+          amount: parseFloat( order.total ),
+          discount: 0.0,
+          taxAmount: 0.0,
+          description: "Orden #<%= order.id %>"
+      };
+      console.log("merchantSetup", merchantSetup);
+      let setup = {
+          lang: 'es',
+          embedded: true,
+          container: 'container-form',
+          onError: function (data) {
+              console.error("errors", data);
+          },
+          onTxSuccess: function (data) {
+              console.log("onTxSuccess", data);
+              window.location.href = "/checkout/success?orderId=<%= order.id %>&txId=" + data?.Oper;
+          },
+          onTxError: function (data) {
+              console.error("when the onTxError, in other process", data);
+              window.location.href = "/checkout/failed?orderId=<%= order.id %>";
+          },
+          onClose: function () {
+              console.log("onClose called");
+              window.location.href = "/checkout/cancel?orderId=<%= order.id %>";
+          }
+      };
+      sdk = merchantSetup.init(
+          merchantSetup.dataMerchant,
+          paymentInfo,
+          setup
+      );
+  }
 </script>

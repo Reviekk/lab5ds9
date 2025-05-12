@@ -50,7 +50,6 @@ app.use((req, res, next) => {
 app.use('/', productRoutes);
 app.use('/cart', cartRoutes);
 app.use('/checkout', checkoutRoutes);
-// app.use('/products', productRoutes);
 
 // Manejo de errores 404
 app.use((req, res) => {
