@@ -1,97 +1,62 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><=% title %> | Mi Tienda</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css">
-  <% if(typeof isPagueloFacilPage !== 'undefined' && isPagueloFacilPage) { %>
-    <script src="https://secure.paguelofacil.com/HostedFields/vendor/scripts/WALLET/PFScript.js"></script>
-  <% } %>
-</head>
-<body>
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="/">Mi Tienda</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/products">Productos</a>
-            </li>
-          </ul>
-          <div class="navbar-text">
-            <a href="/cart" class="btn btn-outline-light">
-              <i class="fas fa-shopping-cart"></i> Carrito 
-              (<span id="cart-count"><%= typeof cartItemCount !== 'undefined' ? cartItemCount : 0 %></span>)
-            </a>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </header>
-
-  <main class="container my-4">
-    <div class="jumbotron">
-        <h1 class="display-4">Bienvenido a Mi Tienda</h1>
-        <p class="lead">Descubre nuestros productos de alta calidad al mejor precio.</p>
-        <hr class="my-4">
-        <p>Explora nuestro catálogo de productos y disfruta de una experiencia de compra única.</p>
-        <a class="btn btn-primary btn-lg" href="/products" role="button">Ver productos</a>
-      </div>
-      
-      <section>
-        <h2 class="mb-4">Productos Destacados</h2>
-        
-        <div class="row">
-          <% for(let product of featuredProducts) { %>
-            <div class="col-md-4 mb-4">
-              <div class="card product-card">
-                <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
-                <div class="card-body">
-                  <h5 class="card-title"><%= product.name %></h5>
-                  <p class="card-text text-truncate"><%= product.description %></p>
-                  <p class="card-text text-primary font-weight-bold">$<%= product.price %></p>
-                  <div class="d-flex justify-content-between">
-                    <a href="/products/<%= product.id %>" class="btn btn-outline-primary">Ver detalles</a>
-                    <form action="/cart/add" method="POST">
-                      <input type="hidden" name="productId" value="<%= product.id %>">
-                      <input type="hidden" name="quantity" value="1">
-                      <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-cart-plus"></i> Agregar
-                      </button>
-                    </form>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title><%= title %> | Mi Tienda</title>
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+          <link rel="stylesheet" href="/css/styles.css">
+          <% if(typeof isStripePage !== 'undefined' && isStripePage) { %>
+            <script src="https://js.stripe.com/v3/"></script>
+          <% } %>
+        </head>
+        <body>
+          <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+              <div class="container">
+                <a class="navbar-brand" href="/">Mi Tienda</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                      <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                  </ul>
+                  <div class="navbar-text">
+                    <a href="/cart" class="btn btn-outline-light">
+                      <i class="fas fa-shopping-cart"></i> Carrito 
+                      (<span id="cart-count"><%= typeof cartItemCount !== 'undefined' ? cartItemCount : 0 %></span>)
+                    </a>
                   </div>
                 </div>
               </div>
+            </nav>
+          </header>
+        
+          <main class="container my-4">
+            <%- body %>
+          </main>
+        
+          <footer class="bg-dark text-white py-4 mt-4">
+            <div class="container text-center">
+              <p>© <%= new Date().getFullYear() %> Mi Tienda. Todos los derechos reservados.</p>
+              <p class="text-muted">Laboratorio 5 - Desarrollo de Software IX</p>
             </div>
+          </footer>
+        
+          <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+          <script src="/js/main.js"></script>
+        
+          <% if(typeof scripts !== 'undefined') { %>
+            <%- scripts %>
           <% } %>
-        </div>
-      </section>
-  </main>
-
-  <footer class="bg-dark text-white py-4 mt-4">
-    <div class="container text-center">
-      <p>© <%= new Date().getFullYear() %> Mi Tienda. Todos los derechos reservados.</p>
-      <p class="text-muted">Laboratorio 5 - Desarrollo de Software IX</p>
-    </div>
-  </footer>
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="/js/main.js"></script>
-
-  <% if(typeof scripts !== 'undefined') { %>
-    <%- scripts %>
-  <% } %>
-</body>
-</html>
+        </body>
+        </html>
