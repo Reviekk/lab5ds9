@@ -25,6 +25,13 @@ app.locals.stripe = {
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Configuración del layout
+const expressLayouts = require('express-ejs-layouts');
+app.use(expressLayouts);
+app.set('layout', 'layout');
+app.set("layout extractScripts", true);
+app.set("layout extractStyles", true);
+
 // ⚠️ La ruta de webhook debe ir antes del bodyParser (requerido por Stripe)
 app.use('/webhook', webhookRoutes);
 
