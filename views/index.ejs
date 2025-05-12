@@ -1,36 +1,22 @@
-<div class="jumbotron">
-  <h1 class="display-4">Bienvenido a Mi Tienda</h1>
-  <p class="lead">Descubre nuestros productos de alta calidad al mejor precio.</p>
-  <hr class="my-4">
-  <p>Explora nuestro catálogo de productos y disfruta de una experiencia de compra única.</p>
-  <a class="btn btn-primary btn-lg" href="/products" role="button">Ver productos</a>
-</div>
-
-<section>
-  <h2 class="mb-4">Productos Destacados</h2>
-  
-  <div class="row">
-    <% for(let product of featuredProducts) { %>
-      <div class="col-md-4 mb-4">
-        <div class="card product-card">
-          <img src="<%= product.imageUrl %>" class="card-img-top" alt="<%= product.name %>">
-          <div class="card-body">
-            <h5 class="card-title"><%= product.name %></h5>
-            <p class="card-text text-truncate"><%= product.description %></p>
-            <p class="card-text text-primary font-weight-bold">$<%= product.price %></p>
-            <div class="d-flex justify-content-between">
-              <a href="/products/<%= product.id %>" class="btn btn-outline-primary">Ver detalles</a>
-              <form action="/cart/add" method="POST">
-                <input type="hidden" name="productId" value="<%= product.id %>">
-                <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="btn btn-primary">
-                  <i class="fas fa-cart-plus"></i> Agregar
-                </button>
-              </form>
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    
+</head>
+<body>
+    <h1>Productos Destacados</h1>
+    <% if (featuredProducts.length > 0) { %>
+        <% featuredProducts.forEach(product => { %>
+            <div>
+                <h3><%= product.name %></h3>
+                <p>Precio: $<%= product.price %></p>
             </div>
-          </div>
-        </div>
-      </div>
+        <% }) %>
+    <% } else { %>
+        <p>No hay productos destacados.</p>
     <% } %>
-  </div>
-</section>
+    <a href="/products">Ver todos los productos</a>
+</body>
+</html>

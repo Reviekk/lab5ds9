@@ -4,6 +4,7 @@ const path = require("path");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const sequelize = require("./config/database");
+const expressLayouts = require('express-ejs-layouts');
 
 const { Product, Order, OrderItem } = require("./models");
 
@@ -25,12 +26,11 @@ app.locals.stripe = {
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Configuración del layout
-const expressLayouts = require('express-ejs-layouts');
 app.use(expressLayouts);
 app.set('layout', 'layout');
-app.set("layout extractScripts", true);
-app.set("layout extractStyles", true);
+app.set("layout extractScripts", false);
+app.set("layout extractStyles", false);
+
 
 // ⚠️ La ruta de webhook debe ir antes del bodyParser (requerido por Stripe)
 app.use('/webhook', webhookRoutes);
@@ -64,7 +64,6 @@ app.use((req, res, next) => {
 });
 
 // Rutas principales
-
 app.use("/", productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/checkout", checkoutRoutes);
